@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدردشة - صيدليتي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #C8E6C9;
+            --secondary: #FFB300;
+            --text: #2D3436;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            background: #f8f9fa;
+            color: var(--text);
+        }
+
+        /* الهيدر المعدل */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1B5E20 100%);
+            box-shadow: var(--shadow);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .pharmacy-name {
+            flex: 1;
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* شريط البحث */
+        .search-container {
+            padding: 1rem;
+            background: white;
+            box-shadow: var(--shadow);
+            margin: 1rem;
+            border-radius: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--primary-light);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+        }
+
+        /* منطقة الدردشة */
+        .chat-wrapper {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            box-shadow: var(--shadow);
+            margin: 0 1rem;
+            height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        /* فقاعات الرسائل */
+        .message-bubble {
+            max-width: 85%;
+            padding: 1rem;
+            border-radius: 1.5rem;
+            position: relative;
+            transition: transform 0.2s ease;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .patient-message {
+            background: var(--primary-light);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .pharmacist-message {
+            background: white;
+            border: 2px solid var(--primary-light);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            display: block;
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.5rem;
+            text-align: left;
+        }
+
+        /* شريط الإدخال */
+        .input-container {
+            padding: 1rem;
+            background: white;
+            border-top: 2px solid #eee;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #eee;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background: #1B5E20;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .chat-wrapper {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .search-container {
+                margin: 0.5rem;
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+        <h1 class="pharmacy-name" id="pharmacyHeader">ابحث عن صيدلية</h1>
+        <button class="medical-record-btn" onclick="openMedicalRecord()">
+            <i class="fas fa-file-medical"></i>
+        </button>
+    </header>
+
+    <div class="search-container">
+        <input type="text" 
+               class="search-input" 
+               id="pharmacySearchInput"
+               placeholder="أدخل اسم الصيدلية..."
+               onkeypress="handleSearchInput(event)">
+        <button class="send-btn" onclick="searchPharmacy()">
+            بحث
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+
+    <div class="chat-wrapper">
+        <div class="messages-container" id="messages">
+            <!-- الرسائل تظهر هنا تلقائيا -->
+        </div>
+        
+        <div class="input-container">
+            <input type="text" 
+                   class="chat-input" 
+                   id="chatInput"
+                   placeholder="اكتب رسالتك..."
+                   onkeypress="handleMessageInput(event)">
+                   
+            <button class="send-btn" onclick="sendMessage()">
+                إرسال
+                <i class="fas fa-paper-plane"></i>
+            </button>
+            
+            <input type="file" 
+                   id="attachment" 
+                   hidden 
+                   accept="image/*, application/pdf"
+                   onchange="handleFileUpload(event)">
+            <label for="attachment" class="send-btn">
+                <i class="fas fa-paperclip"></i>
+            </label>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script>
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBM1zufhscqmg3YNKX-LdOIBcheXkgy42E",
+            authDomain: "say-1d260.firebaseapp.com",
+            projectId: "say-1d260",
+            storageBucket: "say-1d260.firebasestorage.app",
+            messagingSenderId: "451715347744",
+            appId: "1:451715347744:web:333813970e5d452cc7d345"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // إدارة الحالة
+        let currentUser = null;
+        let selectedPharmacy = null;
+        let currentChatId = null;
+
+        // مصادقة تلقائية
+        auth.onAuthStateChanged(user => {
+            currentUser = user || (await auth.signInAnonymously()).user;
+        });
+
+        // إدارة الدردشة
+        function initializeChat() {
+            db.collection('chats').doc(currentChatId)
+              .collection('messages')
+              .orderBy('timestamp')
+              .onSnapshot(snapshot => {
+                  const messagesContainer = document.getElementById('messages');
+                  messagesContainer.innerHTML = '';
+                  
+                  snapshot.forEach(doc => {
+                      const msg = doc.data();
+                      const messageElement = createMessageElement(msg);
+                      messagesContainer.appendChild(messageElement);
+                  });
+                  
+                  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+              });
+        }
+
+        function createMessageElement(msg) {
+            const isPatient = msg.sender === currentUser.uid;
+            const element = document.createElement('div');
+            element.className = `message-bubble ${isPatient ? 'patient-message' : 'pharmacist-message'}`;
+            
+            const time = new Date(msg.timestamp?.seconds * 1000).toLocaleTimeString('ar-EG');
+            
+            element.innerHTML = `
+                ${!isPatient ? `<div class="pharmacist-name">الصيدلي</div>` : ''}
+                <div class="message-content">${msg.text}</div>
+                <div class="message-time">${time}</div>
+            `;
+            
+            return element;
+        }
+
+        // إدارة الأحداث
+        async function searchPharmacy() {
+            const searchTerm = document.getElementById('pharmacySearchInput').value.trim();
+            if (!searchTerm) return;
+            
+            try {
+                const snapshot = await db.collection('pharmacies')
+                    .where('name', '>=', searchTerm)
+                    .where('name', '<=', searchTerm + '\uf8ff')
+                    .get();
+
+                if (snapshot.empty) {
+                    alert('لم يتم العثور على صيدلية');
+                    return;
+                }
+
+                selectedPharmacy = snapshot.docs[0].data();
+                currentChatId = `${currentUser.uid}_${snapshot.docs[0].id}`;
+                document.getElementById('pharmacyHeader').textContent = selectedPharmacy.name;
+                initializeChat();
+            } catch (error) {
+                console.error('خطأ في البحث:', error);
+            }
+        }
+
+        async function sendMessage() {
+            const inputField = document.getElementById('chatInput');
+            const messageText = inputField.value.trim();
+            if (!messageText || !currentChatId) return;
+
+            try {
+                await db.collection('chats').doc(currentChatId).collection('messages').add({
+                    text: messageText,
+                    sender: currentUser.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    isRead: false
+                });
+                
+                inputField.value = '';
+            } catch (error) {
+                console.error('خطأ في إرسال الرسالة:', error);
+            }
+        }
+
+        // مساعدات الأحداث
+        function handleMessageInput(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function handleSearchInput(e) {
+            if (e.key === 'Enter') searchPharmacy();
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // هنا يمكن إضافة منطق رفع الملفات
+            alert(`تم اختيار الملف: ${file.name}`);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function openMedicalRecord() {
+            // يمكن دمج مع سجل طبي إلكتروني
+            alert('فتح السجل الطبي');
+        }
+    </script>
+</body>
+</html>

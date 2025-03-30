@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>صيدليتي - تسجيل الدخول</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #C8E6C9;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+    .container {
+      width: 90%;
+      max-width: 400px;
+      background: #fff;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .active {
+      display: block;
+    }
+    .container:not(.active) {
+      display: none;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      object-fit: cover;
+    }
+    h2 {
+      color: #2E7D32;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      color: #2E7D32;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .input-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 10px 40px 10px 10px;
+      border: 1px solid #81C784;
+      border-radius: 8px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .input-group i {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #2E7D32;
+    }
+    .toggle-password {
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #2E7D32;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #4CAF50;
+    }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .link a {
+      color: #388E3C;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .forgot-header {
+      background: linear-gradient(to bottom, #C8E6C9, #fff);
+      padding: 20px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      text-align: center;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-left: 5px;
+    }
+    #googleSignUp {
+      background-color: #fff;
+      color: #2E7D32;
+      border: 1px solid #2E7D32;
+      margin-top: 15px;
+    }
+    #googleSignUp i {
+      margin-left: 5px;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    .disclaimer {
+      text-align: center;
+      font-size: 12px;
+      color: #555;
+      margin-top: 15px;
+    }
+    .terms-content {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <!-- شاشة تسجيل الدخول -->
+  <div class="container active" id="login-screen">
+    <img src="logo.png" alt="شعار صيدليتي" class="logo">
+    <h2>تسجيل الدخول</h2>
+    <div class="input-group">
+      <label for="email">البريد الإلكتروني</label>
+      <i class="fa fa-envelope"></i>
+      <input type="email" id="email" placeholder="example@domain.com" required>
+      <div class="error" id="email-error"></div>
+    </div>
+    <div class="input-group">
+      <label for="password">كلمة المرور</label>
+      <i class="fa fa-lock"></i>
+      <input type="password" id="password" placeholder="********" required>
+      <i class="fa fa-eye toggle-password" id="togglePassword"></i>
+    </div>
+    <button class="btn" id="loginBtn">تسجيل الدخول</button>
+    <div class="link">
+      <a href="#" onclick="showForgotPassword()">نسيت كلمة المرور؟</a>
+    </div>
+    <div class="link">
+      <a href="#" onclick="showSignUp()">إنشاء حساب جديد</a>
+    </div>
+    <div class="disclaimer">
+      تنويه: نحن لسنا جهة حكومية
+    </div>
+  </div>
+
+  <!-- شاشة إنشاء حساب -->
+  <div class="container" id="signup-screen">
+    <h2>انضم إلى صيدليتي</h2>
+    <div class="input-group">
+      <label for="fullname">الاسم الكامل</label>
+      <i class="fa fa-user"></i>
+      <input type="text" id="fullname" placeholder="أدخل اسمك الكامل" required>
+    </div>
+    <div class="input-group">
+      <label for="signup-email">البريد الإلكتروني</label>
+      <i class="fa fa-envelope"></i>
+      <input type="email" id="signup-email" placeholder="example@domain.com" required>
+    </div>
+    <div class="input-group">
+      <label for="signup-password">كلمة المرور <small style="font-size:12px;">(8 أحرف على الأقل مع أحرف وأرقام)</small></label>
+      <i class="fa fa-lock"></i>
+      <input type="password" id="signup-password" placeholder="********" required>
+    </div>
+    <div class="input-group">
+      <label for="confirm-password">تأكيد كلمة المرور</label>
+      <i class="fa fa-lock"></i>
+      <input type="password" id="confirm-password" placeholder="********" required>
+    </div>
+    <div class="input-group">
+      <label for="phone">رقم الهاتف</label>
+      <i class="fa fa-phone"></i>
+      <input type="tel" id="phone" placeholder="+966 5xxxxxxxx" required>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="terms" required>
+      <label for="terms" style="margin:0;">أوافق على <a href="#" onclick="showTerms()">الشروط والأحكام وسياسة الاستخدام</a></label>
+    </div>
+    <button class="btn" id="signupBtn">إنشاء حساب</button>
+    <div class="link">
+      <a href="#" onclick="showLogin()">العودة لتسجيل الدخول</a>
+    </div>
+    <hr>
+    <button class="btn" id="googleSignUp">
+      <i class="fa fa-google"></i> التسجيل عبر Google
+    </button>
+    <div class="disclaimer">
+      تنويه: نحن لسنا جهة حكومية
+    </div>
+  </div>
+
+  <!-- شاشة استعادة كلمة المرور -->
+  <div class="container" id="forgot-screen">
+    <div class="forgot-header">
+      <h2>استعد كلمة المرور</h2>
+    </div>
+    <div style="padding: 20px;">
+      <p style="color: #2E7D32; text-align: center;">أدخل بريدك الإلكتروني لإرسال رابط إعادة التعيين</p>
+      <div class="input-group">
+        <label for="forgot-email">البريد الإلكتروني</label>
+        <i class="fa fa-envelope"></i>
+        <input type="email" id="forgot-email" placeholder="example@domain.com" required>
+      </div>
+      <button class="btn" id="sendLinkBtn">أرسل الرابط <i class="fa fa-arrow-left" style="margin-right:5px;"></i></button>
+      <div class="link">
+        <a href="#" onclick="showLogin()">العودة لتسجيل الدخول</a>
+      </div>
+      <div class="disclaimer">
+        تنويه: نحن لسنا جهة حكومية
+      </div>
+    </div>
+  </div>
+
+  <!-- شاشة الشروط والأحكام -->
+  <div class="container" id="terms-screen">
+    <h2>الشروط والأحكام وسياسة الاستخدام</h2>
+    <div class="terms-content">
+      <p>مرحبًا بكم في تطبيق صيدليتي. باستخدام هذا التطبيق، فإنك توافق على الالتزام بالشروط والأحكام التالية:</p>
+      <ul>
+        <li>تطبيق صيدليتي هو منصة إلكترونية غير حكومية تقدم خدمات الصيدلة عبر الإنترنت.</li>
+        <li>يجب على المستخدمين تقديم معلومات صحيحة وكاملة عند التسجيل.</li>
+        <li>يُمنع استخدام التطبيق لأي أغراض غير قانونية أو ضارة.</li>
+        <li>تحتفظ إدارة التطبيق بالحق في تعديل الشروط والأحكام في أي وقت دون إشعار مسبق.</li>
+        <li>لا تتحمل إدارة التطبيق أي مسؤولية عن الأضرار الناتجة عن استخدام التطبيق.</li>
+        <li>باستخدامك للتطبيق، فإنك توافق على جميع الشروط المذكورة أعلاه.</li>
+      </ul>
+      <p>إذا كانت لديك أي استفسارات حول الشروط والأحكام، يرجى الاتصال بالدعم الفني.</p>
+    </div>
+    <div class="link">
+      <a href="#" onclick="closeTerms()">إغلاق</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyBM1zufhscqmg3YNKX-LdOIBcheXkgy42E",
+      authDomain: "say-1d260.firebaseapp.com",
+      projectId: "say-1d260",
+      storageBucket: "say-1d260.firebasestorage.app",
+      messagingSenderId: "451715347744",
+      appId: "1:451715347744:web:333813970e5d452cc7d345",
+      measurementId: "G-1B9HCPL8VE"
+    };
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    
+    // عند تسجيل الدخول عبر Google يتم إعادة التوجيه إلى home.html
+    document.getElementById("googleSignUp").addEventListener("click", () => {
+      signInWithPopup(auth, provider)
+        .then(result => {
+          console.log("تم تسجيل الدخول عبر Google", result.user);
+          window.location.href = "home.html";
+        })
+        .catch(error => {
+          console.error("خطأ في تسجيل الدخول عبر Google", error);
+        });
+    });
+  </script>
+
+  <script>
+    function hideAllScreens() {
+      document.getElementById('login-screen').classList.remove('active');
+      document.getElementById('signup-screen').classList.remove('active');
+      document.getElementById('forgot-screen').classList.remove('active');
+      document.getElementById('terms-screen').classList.remove('active');
+    }
+    function showSignUp() {
+      hideAllScreens();
+      document.getElementById('signup-screen').classList.add('active');
+    }
+    function showLogin() {
+      hideAllScreens();
+      document.getElementById('login-screen').classList.add('active');
+    }
+    function showForgotPassword() {
+      hideAllScreens();
+      document.getElementById('forgot-screen').classList.add('active');
+    }
+    function showTerms() {
+      hideAllScreens();
+      document.getElementById('terms-screen').classList.add('active');
+    }
+    function closeTerms() {
+      showLogin();
+    }
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    togglePassword.addEventListener('click', function () {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      this.classList.toggle('fa-eye-slash');
+    });
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      const emailField = document.getElementById('email');
+      const emailError = document.getElementById('email-error');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(emailField.value)) {
+        emailError.textContent = "يرجى إدخال بريد إلكتروني صالح.";
+        emailField.style.animation = "shake 0.5s";
+        setTimeout(() => { emailField.style.animation = ""; }, 500);
+      } else {
+        emailError.textContent = "";
+        this.textContent = "جاري التحميل...";
+        setTimeout(() => {
+          // إعادة التوجيه إلى صفحة home.html بعد تسجيل الدخول الناجح
+          window.location.href = "home.html";
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>
